@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriPrep | Premier ICAR Preparation Platform</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        /* --- CSS VARIABLES & THEME CONFIGURATION --- */
+        :root {
+            --primary: #2e7d32;
+            --primary-dark: #1b5e20;
+            --secondary: #f9a825;
+            --accent: #00bcd4;
+            --bg-body: #f8f9fa;
+            --bg-card: #ffffff;
+            --text-main: #2c3e50;
+            --text-muted: #6c757d;
+            --border-color: #e9ecef;
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+            --shadow-hover: 0 8px 30px rgba(0,0,0,0.12);
+            --gradient: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+            --nav-height: 80px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] {
+            --primary: #4caf50;
+            --primary-dark: #2e7d32;
+            --secondary: #ffb300;
+            --bg-body: #121212;
+            --bg-card: #1e1e1e;
+            --text-main: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --border-color: #333333;
+            --shadow: 0 4px 20px rgba(0,0,0,0.4);
+            --shadow-hover: 0 8px 30px rgba(0,0,0,0.6);
+            --gradient: linear-gradient(135deg, #1b5e20 0%, #000000 100%);
+        }
+
+        /* --- GLOBAL RESET & TYPOGRAPHY --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            overflow-x: hidden;
+        }
+        h1, h2, h3, h4 { font-family: 'Playfair Display', serif; color: var(--text-main); }
+        a { text-decoration: none; color: inherit; transition: var(--transition); }
+        ul { list-style: none; }
+        button { cursor: pointer; border: none; outline: none; font-family: inherit; }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .section-padding { padding: 80px 0; }
+        .text-center { text-align: center; }
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: var(--transition);
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
+        }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(46, 125, 50, 0.4); }
+        .btn-outline {
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            background: transparent;
+        }
+        .btn-outline:hover { background: var(--primary); color: white; }
+
+        /* --- NAVIGATION --- */
+        header {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            height: var(--nav-height);
+            background: rgba(var(--bg-card), 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.05);
+            transition: var(--transition);
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+        }
+        .logo { font-size: 1.8rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 10px; }
+        .logo i { color: var(--secondary); }
+        
+        .nav-links { display: flex; gap: 30px; }
+        .nav-links a { font-weight: 500; font-size: 0.95rem; position: relative; }
+        .nav-links a::after {
+            content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 2px;
+            background: var(--primary); transition: var(--transition);
+        }
+        .nav-links a:hover::after { width: 100%; }
+
+        .nav-actions { display: flex; align-items: center; gap: 15px; }
+        .theme-toggle {
+            background: transparent; color: var(--text-main); font-size: 1.2rem;
+            padding: 8px; border-radius: 50%; transition: var(--transition);
+        }
+        .theme-toggle:hover { background: var(--border-color); }
+        
+        .mobile-menu-btn { display: none; font-size: 1.5rem; color: var(--text-main); background: none; }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            padding-top: calc(var(--nav-height) + 60px);
+            padding-bottom: 80px;
+            background: radial-gradient(circle at top right, rgba(46, 125, 50, 0.1), transparent 40%),
+                        radial-gradient(circle at bottom left, rgba(249, 168, 37, 0.1), transparent 40%);
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+        }
+        .hero-content { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
+        .hero-text h1 { font-size: 3.5rem; line-height: 1.2; margin-bottom: 20px; }
+        .hero-text p { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 30px; }
+        .hero-stats { display: flex; gap: 40px; margin-top: 40px; }
+        .stat-item h3 { font-size: 2rem; color: var(--primary); margin-bottom: 5px; }
+        .stat-item p { font-size: 0.9rem; color: var(--text-muted); }
+        
+        .hero-image { position: relative; }
+        .hero-image img { width: 100%; border-radius: 20px; box-shadow: var(--shadow-hover); animation: float 6s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+
+        /* --- RESOURCES GRID (PYQ, SAMPLE, TEST, LECTURE) --- */
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        .resource-card {
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+        .resource-card:hover { transform: translateY(-10px); box-shadow: var(--shadow-hover); border-color: var(--primary); }
+        .resource-icon {
+            width: 60px; height: 60px;
+            background: rgba(46, 125, 50, 0.1);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; color: var(--primary);
+            margin-bottom: 20px;
+        }
+        .resource-card h3 { margin-bottom: 10px; font-size: 1.4rem; }
+        .resource-card p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; }
+        .card-tag {
+            position: absolute; top: 15px; right: 15px;
+            background: var(--secondary); color: #000;
+            padding: 4px 10px; border-radius: 20px;
+            font-size: 0.75rem; font-weight: 700;
+        }
+
+        /* --- MODAL (LOGIN/SIGNUP) --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        .modal-container {
+            background: var(--bg-card);
+            padding: 40px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+            box-shadow: var(--shadow-hover);
+        }
+        .modal-overlay.active .modal-container { transform: translateY(0); }
+        .close-modal {
+            position: absolute; top: 15px; right: 20px;
+            font-size: 1.5rem; color: var(--text-muted);
+            background: none; cursor: pointer;
+        }
+        .modal-header { text-align: center; margin-bottom: 30px; }
+        .modal-header h2 { font-size: 1.8rem; margin-bottom: 10px; }
+        
+        .form-group { margin-bottom: 20px; position: relative; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.9rem; }
+        .form-group input {
+            width: 100%; padding: 12px 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--bg-body);
+            color: var(--text-main);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        .form-group input:focus { border-color: var(--primary); outline: none; }
+        .form-error { color: #e53935; font-size: 0.8rem; margin-top: 5px; display: none; }
+        
+        .modal-footer { text-align: center; margin-top: 20px; font-size: 0.9rem; }
+        .modal-footer a { color: var(--primary); font-weight: 600; cursor: pointer; }
+
+        /* --- USER DASHBOARD (Hidden by default) --- */
+        .user-dashboard { display: none; }
+        .user-welcome { display: flex; align-items: center; gap: 15px; }
+        .avatar {
+            width: 40px; height: 40px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: bold;
+        }
+
+        /* --- RESPONSIVE DESIGN --- */
+        @media (max-width: 992px) {
+            .hero-content { grid-template-columns: 1fr; text-align: center; }
+            .hero-stats { justify-content: center; }
+            .hero-image { max-width: 80%; margin: 0 auto; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed; top: var(--nav-height); left: 0; width: 100%;
+                background: var(--bg-card);
+                flex-direction: column;
+                padding: 30px;
+                gap: 20px;
+                transform: translateY(-150%);
+                transition: var(--transition);
+                box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            }
+            .nav-links.active { transform: translateY(0); }
+            .mobile-menu-btn { display: block; }
+            .nav-actions .btn { display: none; } /* Hide login btn on mobile, use menu */
+            .hero-text h1 { font-size: 2.5rem; }
+            .section-padding { padding: 50px 0; }
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed; bottom: 30px; right: 30px;
+            background: var(--bg-card);
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: var(--shadow-hover);
+            border-left: 5px solid var(--primary);
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+            z-index: 3000;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .toast.show { transform: translateX(0); }
+        .toast.success { border-color: #4caf50; }
+        .toast.error { border-color: #e53935; }
+    </style>
+</head>
+<body data-theme="light">
+
+    <!-- Navigation -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="#" class="logo"><i class="fas fa-seedling"></i> AgriPrep</a>
+                
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#resources">Resources</a></li>
+                    <li><a href="#test-series">Test Series</a></li>
+                    <li><a href="#lectures">Lectures</a></li>
+                    <li><a href="#about">About</a></li>
+                </ul>
+
+                <div class="nav-actions">
+                    <button class="theme-toggle" id="themeToggle" title="Toggle Dark Mode">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    
+                    <!-- Auth Buttons -->
+                    <div id="authButtons">
+                        <button class="btn btn-outline" onclick="openModal('login')">Log In</button>
+                        <button class="btn btn-primary" onclick="openModal('signup')">Sign Up</button>
+                    </div>
+
+                    <!-- User Dashboard (Hidden until logged in) -->
+                    <div class="user-dashboard" id="userDashboard">
+                        <div class="user-welcome">
+                            <div class="avatar" id="userAvatar">U</div>
+                            <span id="userNameDisplay">User</span>
+                            <button class="btn btn-outline" style="padding: 5px 15px; font-size: 0.8rem;" onclick="logout()">Logout</button>
+                        </div>
+                    </div>
+
+                    <button class="mobile-menu-btn" id="mobileMenuBtn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>Cultivate Your Dream of <span style="color: var(--primary);">ICAR Success</span></h1>
+                    <p>The most comprehensive platform for AIEEA UG & PG preparation. Access previous year papers, expert lectures, and advanced test series.</p>
+                    <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                        <button class="btn btn-primary" onclick="document.getElementById('resources').scrollIntoView()">Start Learning</button>
+                        <button class="btn btn-outline" onclick="openModal('signup')">Join Free Trial</button>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <h3 data-target="15000">0</h3>
+                            <p>Students</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3 data-target="500">0</h3>
+                            <p>Lectures</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3 data-target="120">0</h3>
+                            <p>Mock Tests</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <!-- Placeholder for hero image -->
+                    <img src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Agriculture Student">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Resources Section -->
+    <section id="resources" class="section-padding">
+        <div class="container">
+            <div class="text-center">
+                <h2 style="font-size: 2.5rem; margin-bottom: 15px;">Comprehensive Study Material</h2>
+                <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto;">Everything you need to crack ICAR AIEEA in one place.</p>
+            </div>
+
+            <div class="resources-grid" id="resourcesContainer">
+                <!-- Content injected via JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Test Series Preview -->
+    <section id="test-series" class="section-padding" style="background: var(--bg-card);">
+        <div class="container">
+            <div class="text-center">
+                <h2 style="font-size: 2.5rem; margin-bottom: 15px;">Advanced Test Series</h2>
+                <p style="color: var(--text-muted);">Simulate real exam conditions with our AI-driven test platform.</p>
+            </div>
+            <div class="resources-grid" style="margin-top: 40px;">
+                <div class="resource-card">
+                    <span class="card-tag">Popular</span>
+                    <div class="resource-icon"><i class="fas fa-clock"></i></div>
+                    <h3>Full Length Mocks</h3>
+                    <p>3-hour simulations based on the latest NTA pattern with detailed analytics.</p>
+                    <button class="btn btn-outline" style="width: 100%">Attempt Now</button>
+                </div>
+                <div class="resource-card">
+                    <div class="resource-icon"><i class="fas fa-book-open"></i></div>
+                    <h3>Subject Wise Tests</h3>
+                    <p>Focus on weak areas with targeted tests for Physics, Chemistry, Biology & Agriculture.</p>
+                    <button class="btn btn-outline" style="width: 100%">View Subjects</button>
+                </div>
+                <div class="resource-card">
+                    <div class="resource-icon"><i class="fas fa-chart-line"></i></div>
+                    <h3>Performance Analytics</h3>
+                    <p>Get deep insights into your speed, accuracy, and All India Rank prediction.</p>
+                    <button class="btn btn-outline" style="width: 100%">Check Demo</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="background: #1a1a1a; color: #fff; padding: 60px 0 20px;">
+        <div class="container">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; margin-bottom: 40px;">
+                <div>
+                    <h3 style="color: #fff; margin-bottom: 20px; font-family: 'Playfair Display';">AgriPrep</h3>
+                    <p style="color: #aaa; font-size: 0.9rem;">Empowering future agriculturists with world-class preparation tools.</p>
+                </div>
+                <div>
+                    <h4 style="color: #fff; margin-bottom: 20px;">Quick Links</h4>
+                    <ul style="color: #aaa; font-size: 0.9rem; line-height: 2;">
+                        <li><a href="#">Previous Year Papers</a></li>
+                        <li><a href="#">Sample Papers</a></li>
+                        <li><a href="#">Test Series</a></li>
+                        <li><a href="#">Video Lectures</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color: #fff; margin-bottom: 20px;">Contact</h4>
+                    <p style="color: #aaa; font-size: 0.9rem;"><i class="fas fa-envelope"></i> support@agriprep.com</p>
+                    <p style="color: #aaa; font-size: 0.9rem;"><i class="fas fa-phone"></i> +91 98765 43210</p>
+                </div>
+            </div>
+            <div style="border-top: 1px solid #333; padding-top: 20px; text-align: center; color: #666; font-size: 0.8rem;">
+                &copy; 2024 AgriPrep Platform. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login/Signup Modal -->
+    <div class="modal-overlay" id="authModal">
+        <div class="modal-container">
+            <button class="close-modal" onclick="closeModal()">&times;</button>
+            
+            <!-- Login Form -->
+            <div id="loginForm">
+                <div class="modal-header">
+                    <h2>Welcome Back</h2>
+                    <p style="color: var(--text-muted)">Login to access your dashboard</p>
+                </div>
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="loginEmail" required placeholder="student@example.com">
+                        <div class="form-error" id="loginEmailError">Invalid email format</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="loginPass" required placeholder="••••••••">
+                        <div class="form-error" id="loginPassError">Password must be at least 6 characters</div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%">Log In</button>
+                </form>
+                <div class="modal-footer">
+                    Don't have an account? <a onclick="switchModal('signup')">Sign Up</a>
+                </div>
+            </div>
+
+            <!-- Signup Form -->
+            <div id="signupForm" style="display: none;">
+                <div class="modal-header">
+                    <h2>Create Account</h2>
+                    <p style="color: var(--text-muted)">Start your ICAR journey today</p>
+                </div>
+                <form onsubmit="handleSignup(event)">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="signupName" required placeholder="John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="signupEmail" required placeholder="student@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="signupPass" required placeholder="Create a strong password">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%">Sign Up</button>
+                </form>
+                <div class="modal-footer">
+                    Already have an account? <a onclick="switchModal('login')">Log In</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle" style="color: #4caf50;"></i>
+        <span id="toastMessage">Operation successful!</span>
+    </div>
+
+    <script>
+        // --- MOCK DATABASE INITIALIZATION ---
+        const DB = {
+            init: () => {
+                if (!localStorage.getItem('users')) {
+                    localStorage.setItem('users', JSON.stringify([
+                        { email: 'demo@agriprep.com', pass: '123456', name: 'Demo User' }
+                    ]));
+                }
+                if (!localStorage.getItem('resources')) {
+                    localStorage.setItem('resources', JSON.stringify([
+                        { id: 1, type: 'PYQ', title: 'ICAR AIEEA 2023 Paper', desc: 'Complete question paper with answer keys.', icon: 'fa-file-alt' },
+                        { id: 2, type: 'PYQ', title: 'ICAR AIEEA 2022 Paper', desc: 'Previous year questions for practice.', icon: 'fa-file-alt' },
+                        { id: 3, type: 'Sample', title: 'Biology Model Paper', desc: 'High yield questions for Botany & Zoology.', icon: 'fa-flask' },
+                        { id: 4, type: 'Sample', title: 'Agriculture Model Paper', desc: 'Focus on agronomy and horticulture concepts.', icon: 'fa-seedling' },
+                        { id: 5, type: 'Lecture', title: 'Genetics Masterclass', desc: '45 mins video lecture by Dr. Sharma.', icon: 'fa-video' },
+                        { id: 6, type: 'Lecture', title: 'Organic Chemistry Basics', desc: 'Fundamental concepts for entrance exams.', icon: 'fa-video' },
+                        { id: 7, type: 'Test', title: 'Full Mock Test 01', desc: 'Simulate the real exam environment.', icon: 'fa-laptop-code' },
+                        { id: 8, type: 'Test', title: 'Physics Quick Quiz', desc: '20 questions in 30 minutes.', icon: 'fa-stopwatch' }
+                    ]));
+                }
+            },
+            getUsers: () => JSON.parse(localStorage.getItem('users')),
+            addUser: (user) => {
+                const users = DB.getUsers();
+                users.push(user);
+                localStorage.setItem('users', JSON.stringify(users));
+            },
+            getResources: () => JSON.parse(localStorage.getItem('resources'))
+        };
+
+        // --- STATE MANAGEMENT ---
+        let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+        // --- DOM ELEMENTS ---
+        const themeToggle = document.getElementById('themeToggle');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.getElementById('navLinks');
+        const authModal = document.getElementById('authModal');
+        const loginForm = document.getElementById('loginForm');
+        const signupForm = document.getElementById('signupForm');
+        const authButtons = document.getElementById('authButtons');
+        const userDashboard = document.getElementById('userDashboard');
+        const resourcesContainer = document.getElementById('resourcesContainer');
+
+        // --- INITIALIZATION ---
+        window.addEventListener('DOMContentLoaded', () => {
+            DB.init();
+            loadTheme();
+            checkAuth();
+            renderResources();
+            animateCounters();
+        });
+
+        // --- THEME TOGGLE ---
+        themeToggle.addEventListener('click', () => {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            themeToggle.innerHTML = newTheme === 'light' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+        });
+
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.body.setAttribute('data-theme', savedTheme);
+            themeToggle.innerHTML = savedTheme === 'light' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+        }
+
+        // --- MOBILE MENU ---
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            mobileMenuBtn.innerHTML = navLinks.classList.contains('active') 
+                ? '<i class="fas fa-times"></i>' 
+                : '<i class="fas fa-bars"></i>';
+        });
+
+        // Close menu when clicking a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+            });
+        });
+
+        // --- AUTHENTICATION SYSTEM ---
+        function checkAuth() {
+            if (currentUser) {
+                authButtons.style.display = 'none';
+                userDashboard.style.display = 'flex';
+                document.getElementById('userNameDisplay').textContent = currentUser.name;
+                document.getElementById('userAvatar').textContent = currentUser.name.charAt(0).toUpperCase();
+            } else {
+                authButtons.style.display = 'flex';
+                userDashboard.style.display = 'none';
+            }
+        }
+
+        function openModal(type) {
+            authModal.classList.add('active');
+            switchModal(type);
+        }
+
+        function closeModal() {
+            authModal.classList.remove('active');
+        }
+
+        function switchModal(type) {
+            if (type === 'login') {
+                loginForm.style.display = 'block';
+                signupForm.style.display = 'none';
+            } else {
+                loginForm.style.display = 'none';
+                signupForm.style.display = 'block';
+            }
+        }
+
+        // Close modal on outside click
+        authModal.addEventListener('click', (e) => {
+            if (e.target === authModal) closeModal();
+        });
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPass').value;
+            
+            const users = DB.getUsers();
+            const user = users.find(u => u.email === email && u.pass === pass);
+
+            if (user) {
+                currentUser = user;
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                checkAuth();
+                closeModal();
+                showToast(`Welcome back, ${user.name}!`, 'success');
+                document.getElementById('loginForm').reset();
+            } else {
+                showToast('Invalid email or password', 'error');
+            }
+        }
+
+        function handleSignup(e) {
+            e.preventDefault();
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const pass = document.getElementById('signupPass').value;
+
+            const users = DB.getUsers();
+            if (users.find(u => u.email === email)) {
+                showToast('Email already registered!', 'error');
+                return;
+            }
+
+            const newUser = { name, email, pass };
+            DB.addUser(newUser);
+            
+            // Auto login after signup
+            currentUser = newUser;
+            localStorage.setItem('currentUser', JSON.stringify(newUser));
+            checkAuth();
+            closeModal();
+            showToast('Account created successfully!', 'success');
+            document.getElementById('signupForm').reset();
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            checkAuth();
+            showToast('Logged out successfully', 'success');
+        }
+
+        // --- CONTENT RENDERING ---
+        function renderResources() {
+            const resources = DB.getResources();
+            resourcesContainer.innerHTML = resources.map(res => `
+                <div class="resource-card">
+                    <span class="card-tag">${res.type}</span>
+                    <div class="resource-icon"><i class="fas ${res.icon}"></i></div>
+                    <h3>${res.title}</h3>
+                    <p>${res.desc}</p>
+                    <button class="btn btn-outline" style="width: 100%" onclick="${checkAction(res.type)}">
+                        ${res.type === 'Lecture' ? 'Watch Now' : res.type === 'Test' ? 'Start Test' : 'Download'}
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function checkAction(type) {
+            if (!currentUser) return "openModal('login')";
+            return type === 'Lecture' ? "showToast('Loading video player...', 'success')" : 
+                   type === 'Test' ? "showToast('Initializing test environment...', 'success')" : 
+                   "showToast('Downloading PDF...', 'success')";
+        }
+
+        // --- UTILITIES ---
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMessage');
+            const icon = toast.querySelector('i');
+            
+            toastMsg.textContent = message;
+            icon.className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
+            icon.style.color = type === 'success' ? '#4caf50' : '#e53935';
+            toast.style.borderLeftColor = type === 'success' ? '#4caf50' : '#e53935';
+            
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function animateCounters() {
+            const counters = document.querySelectorAll('.stat-item h3');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const counter = entry.target;
+                        const target = +counter.getAttribute('data-target');
+                        const increment = target / 50;
+                        
+                        const updateCounter = () => {
+                            const c = +counter.innerText.replace('+', '');
+                            if (c < target) {
+                                counter.innerText = `${Math.ceil(c + increment)}+`;
+                                setTimeout(updateCounter, 40);
+                            } else {
+                                counter.innerText = `${target}+`;
+                            }
+                        };
+                        updateCounter();
+                        observer.unobserve(counter);
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            counters.forEach(counter => observer.observe(counter));
+        }
+    </script>
+</body>
+</html>
